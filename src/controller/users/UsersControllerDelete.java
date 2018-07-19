@@ -16,13 +16,13 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import model.entity.Facturar;
 import model.entity.Role;
-import model.entity.User;
+import model.entity.Users;
 import pmf.entity.PMF;
 @SuppressWarnings("serial")
 public class UsersControllerDelete extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Key k = KeyFactory.createKey(User.class.getSimpleName(), new Long(req.getParameter("userId")).longValue());
+		Key k = KeyFactory.createKey(Users.class.getSimpleName(), new Long(req.getParameter("userId")).longValue());
 		
 		com.google.appengine.api.users.User uGoogle =UserServiceFactory.getUserService().getCurrentUser();
 		String adminMaestro = "bryan96.sc@gmail.com";
@@ -34,8 +34,8 @@ public class UsersControllerDelete extends HttpServlet {
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 		} else {
 			if(!uGoogle.getEmail().equals(adminMaestro)){
-				String queryUsers = "select from "+User.class.getName()+" where email == '"+uGoogle.getEmail()+"' && status ==true";
-				List<User> searchUser = (List<User>) pm.newQuery(queryUsers).execute();
+				String queryUsers = "select from "+Users.class.getName()+" where email == '"+uGoogle.getEmail()+"' && status ==true";
+				List<Users> searchUser = (List<Users>) pm.newQuery(queryUsers).execute();
 				
 				if(searchUser.isEmpty()){
 					req.getRequestDispatcher("/WEB-INF/Views/Errors/error2.jsp").forward(req, resp);
@@ -52,7 +52,7 @@ public class UsersControllerDelete extends HttpServlet {
 					} else {
 						if(entradaAdmin){
 							try{
-								User us = pm.getObjectById(User.class,k);
+								Users us = pm.getObjectById(Users.class,k);
 								if(us!=null){
 									//Long id = us.getId();
 									pm.deletePersistent(us);
@@ -72,7 +72,7 @@ public class UsersControllerDelete extends HttpServlet {
 				}
 			} else {
 				try{
-					User us = pm.getObjectById(User.class,k);
+					Users us = pm.getObjectById(Users.class,k);
 					if(us!=null){
 						//Long id = us.getId();
 						pm.deletePersistent(us);

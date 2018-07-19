@@ -3,7 +3,9 @@ package model.entity;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -18,8 +20,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 @PersistenceCapable(identityType =IdentityType.APPLICATION)
 public class Proforma  {
 
-	
 	@PrimaryKey
+	
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY) private Long id;
 	@Persistent private String name;
 	@Persistent private String direccion;
@@ -28,19 +30,18 @@ public class Proforma  {
 	@Persistent private double tPrecio;
 	@Persistent private double IGV;
 	@Persistent private int cant;
+	private List<Long> productos;
 	
-
-
-
-
-	public Proforma(String name, String direccion, String telefono, int cant) {
+	
+	public Proforma(String name, String direccion, String telefono) {
 		this.name = name;
 		this.direccion = direccion;
 		this.telefono = telefono;
-		this.cant = cant;
 		this.tPrecio=0.0;
 		this.IGV=0.0;
 		this.date = new Date();
+		this.productos=new ArrayList<Long>();
+		this.tPrecio=0;
 		
 	}
 	
@@ -108,6 +109,16 @@ public class Proforma  {
 	}
 	public void setUnidad(int unidad) {
 		this.cant = unidad;
+	}
+
+
+	public List<Long> getProductos() {
+		return productos;
+	}
+
+
+	public void setProductos(List<Long> productos) {
+		this.productos = productos;
 	}
 
 

@@ -27,7 +27,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import model.entity.Access;
 import model.entity.Role;
-import model.entity.User;
+import model.entity.Users;
 import pmf.entity.PMF;
 @SuppressWarnings("serial")
 public class AccessControllerUpdate extends HttpServlet {
@@ -45,8 +45,8 @@ public class AccessControllerUpdate extends HttpServlet {
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 		} else {
 			if (!uGoogle.getEmail().equals(adminMaestro)){
-				String queryUsers = "select from "+User.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
-				List<User> searchUsers = (List<User>) pm.newQuery(queryUsers).execute();
+				String queryUsers = "select from "+Users.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
+				List<Users> searchUsers = (List<Users>) pm.newQuery(queryUsers).execute();
 				
 				if(searchUsers.isEmpty()){
 					req.getRequestDispatcher("/WEB-INF/Views/Errors/error2.jsp").forward(req, resp);

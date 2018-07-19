@@ -29,8 +29,8 @@ public class ProductIndex extends HttpServlet {
 			req.setAttribute("error", error);
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 		} else {
-			String queryUsers = "select from "+User.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
-			List<User> searchUsers = (List<User>) pm.newQuery(queryUsers).execute();
+			String queryUsers = "select from "+Users.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
+			List<Users> searchUsers = (List<Users>) pm.newQuery(queryUsers).execute();
 
 			if(searchUsers.isEmpty()){
 				error = "Usuario no registrado/Sin permisos.";

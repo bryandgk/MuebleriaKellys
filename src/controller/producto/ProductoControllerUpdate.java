@@ -1,30 +1,33 @@
-package controller.proformas;
-import java.io.IOException;
-import java.util.List;
+package controller.producto;
+import java.util.*;
+import pmf.entity.*;
+import java.io.IOException;  
+import java.io.PrintWriter;
 
-import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
-
+import javax.jws.WebService;
 import javax.servlet.*;  
 import javax.servlet.http.*;
-import pmf.entity.*;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import model.entity.Access;
+import model.entity.Producto;
 import model.entity.Proforma;
 import model.entity.Resources;
 import model.entity.Users;  
 @SuppressWarnings("serial")
-public class ProformasControllerDelete extends HttpServlet {  
+public class ProductoControllerUpdate extends HttpServlet {  
 	@SuppressWarnings("unchecked")
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)   
+			throws ServletException, IOException {  
+	
 		com.google.appengine.api.users.User uGoogle =UserServiceFactory.getUserService().getCurrentUser();
-		String error; 
+		String error;
 		if(uGoogle==null){
-			error = "Necesita iniciar sesion ";
+			error = "necesita iniciar sesión ";
 			request.setAttribute("error", error);
 			RequestDispatcher dp= getServletContext().getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp");
 			dp.forward(request, response);
@@ -34,7 +37,7 @@ public class ProformasControllerDelete extends HttpServlet {
 			String qUsers="select from "+ Users.class.getName()+" where email=='"+uGoogle.getEmail()+"' && status==true";
 			List<Users> uSearch=(List<Users>) accesoControlador.newQuery(qUsers).execute();
 			if(uSearch.isEmpty()){
-				error = "Usuario no registrado";
+				error = "usuario no registrado";
 				request.setAttribute("error", error);
 				RequestDispatcher dp= getServletContext().getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp");
 				dp.forward(request, response);
@@ -43,7 +46,7 @@ public class ProformasControllerDelete extends HttpServlet {
 						+" where url == '"+request.getServletPath()+"' && status==true";
 				List <Resources> rSearch=(List<Resources>) accesoControlador.newQuery(query2).execute();
 				if(rSearch.isEmpty()){
-					error= "Recurso NO REGISTRADO";
+					error = "Recurso no añadido";
 					request.setAttribute("error", error);
 					RequestDispatcher dp= getServletContext().getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp");
 					dp.forward(request, response);
@@ -53,33 +56,50 @@ public class ProformasControllerDelete extends HttpServlet {
 							+" where idRole == "+uSearch.get(0).getIdRole()+" && id== "+rSearch.get(0).getId()+" && status==true";	
 					List <Access> aSearch=(List<Access>) accesoControlador.newQuery(query3).execute();		
 					if(aSearch.isEmpty()){
-						error = "no se registro el acceso";
+						error = "no se registró el acceso";
 						request.setAttribute("error", error);
 						RequestDispatcher dp= getServletContext().getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp");
 						dp.forward(request, response);
 					}else{
-						accesoControlador.close();
+						accesoControlador.close();	
 
 						PersistenceManager pm = PMF.get().getPersistenceManager();
-						Key k = KeyFactory.createKey(Proforma.class.getSimpleName(), new Long(request.getParameter("proformaId")).longValue());
-						try{
-							Proforma r = pm.getObjectById(Proforma.class, k);
-							if (r !=null){
-								pm.deletePersistent(r);
+						Key k = KeyFactory.createKey(Producto.class.getSimpleName(), new Long(request.getParameter("productoId")).longValue());
+						Producto r = pm.getObjectById(Producto.class, k);
 
-								response.sendRedirect("/proformas");
-								pm.close();
-							}
-						}catch (JDOObjectNotFoundException e) {
-							response.sendRedirect("/proformas");
-						}
+						request.setAttribute("producto", r);
 
+						request.getRequestDispatcher("/WEB-INF/Views/Productos/update.jsp").forward(request, response);
+						pm.close();
 					}
 				}
 			}
 		}
+
 	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
-		doGet(request,response);	
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)   
+			throws ServletException, IOException {  
+
+		PersistenceManager pm=PMF.get().getPersistenceManager();
+		String name=request.getParameter("name");  
+		String uPrecio=request.getParameter("uPrecio");
+		String qProducto="select from "+ Producto.class.getName()+ "where name=='"+name+"'";
+		List<Producto> productos=(List<Producto>) pm.newQuery(qProducto).execute();
+		
+		double precio=Double.parseDouble(uPrecio);
+		
+		
+		if(productos.isEmpty()){
+
+			Key k = KeyFactory.createKey(Producto.class.getSimpleName(), new Long(request.getParameter("productoId")).longValue());
+			Producto r = pm.getObjectById(Producto.class, k);
+			r.setName(name);
+			r.setpPrecio(precio);
+			response.sendRedirect("/productos");
+			pm.close();
+			
+		}
+
+		}
 	}
-}

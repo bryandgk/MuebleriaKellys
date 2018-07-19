@@ -15,7 +15,7 @@ import model.entity.Access;
 import model.entity.Facturar;
 import model.entity.Resources;
 import model.entity.Role;
-import model.entity.User;
+import model.entity.Users;
 import pmf.entity.PMF;
 @SuppressWarnings("serial")
 public class RolesControllerAdd extends HttpServlet{
@@ -33,8 +33,8 @@ public class RolesControllerAdd extends HttpServlet{
 		} else {
 			if(!uGoogle.getEmail().equals(adminMaestro)){
 				PersistenceManager pm = PMF.get().getPersistenceManager();
-				String queryUsers = "select from "+User.class.getName()+" where email == '"+uGoogle.getEmail()+"' && status ==true";
-				List<User> searchUser = (List<User>) pm.newQuery(queryUsers).execute();
+				String queryUsers = "select from "+Users.class.getName()+" where email == '"+uGoogle.getEmail()+"' && status ==true";
+				List<Users> searchUser = (List<Users>) pm.newQuery(queryUsers).execute();
 				
 				if (searchUser.isEmpty()){
 					req.getRequestDispatcher("/WEB-INF/Views/Errors/error2.jsp").forward(req, resp);

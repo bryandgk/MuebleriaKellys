@@ -1,4 +1,5 @@
-package controller.proformas;
+package controller.producto;
+
 import java.io.IOException;
 import pmf.entity.*;
 
@@ -18,7 +19,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import model.entity.*;
 
 @SuppressWarnings("serial")
-public class ProformasControllerView extends HttpServlet {
+public class ProductoControllerView extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		com.google.appengine.api.users.User uGoogle =UserServiceFactory.getUserService().getCurrentUser();
 		String error ;
@@ -41,10 +42,10 @@ public class ProformasControllerView extends HttpServlet {
 				accesoControlador.close();
 
 				PersistenceManager pm = PMF.get().getPersistenceManager();
-				Key k = KeyFactory.createKey(Proforma.class.getSimpleName(), Long.parseLong(request.getParameter("proformaId")));
-				Proforma proformas = pm.getObjectById(Proforma.class, k);
-				request.setAttribute("proformas", proformas);
-				request.getRequestDispatcher("/WEB-INF/Views/proformas/read.jsp").forward(request, response);
+				Key k = KeyFactory.createKey(Producto.class.getSimpleName(), Long.parseLong(request.getParameter("productoId")));
+				Producto producto = pm.getObjectById(Producto.class, k);
+				request.setAttribute("producto", producto);
+				request.getRequestDispatcher("/WEB-INF/Views/Productos/view.jsp").forward(request, response);
 				pm.close();
 			}
 		}

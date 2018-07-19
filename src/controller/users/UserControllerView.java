@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import model.entity.User;
+import model.entity.Users;
 import pmf.entity.PMF;
 
 @SuppressWarnings("serial")
@@ -26,14 +26,14 @@ public class UserControllerView extends HttpServlet{
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error1.jsp").forward(req, resp);
 		} else {
 			PersistenceManager pm= PMF.get().getPersistenceManager();
-			String queryUsers = "select from "+ User.class.getName()+ " where email== '"+uGoogle.getEmail()+"'"+" && status == true";
-			List<User> searchUser = (List<User>) pm.newQuery(queryUsers).execute();
+			String queryUsers = "select from "+ Users.class.getName()+ " where email== '"+uGoogle.getEmail()+"'"+" && status == true";
+			List<Users> searchUser = (List<Users>) pm.newQuery(queryUsers).execute();
 			
 			if(searchUser.isEmpty()){
 				req.getRequestDispatcher("/WEB-INF/Views/Errors/error2.jsp").forward(req, resp);
 			} else{
-				Key k = KeyFactory.createKey(User.class.getSimpleName(), Long.parseLong(req.getParameter("userId")));
-				User us = pm.getObjectById(User.class,k);
+				Key k = KeyFactory.createKey(Users.class.getSimpleName(), Long.parseLong(req.getParameter("userId")));
+				Users us = pm.getObjectById(Users.class,k);
 				req.setAttribute("user", us);
 				req.getRequestDispatcher("/WEB-INF/Views/Users/view.jsp").forward(req, resp);
 				pm.close();

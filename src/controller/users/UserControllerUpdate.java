@@ -18,7 +18,7 @@ import pmf.entity.PMF;
 import model.entity.Access;
 import model.entity.Resources;
 import model.entity.Role;
-import model.entity.User;
+import model.entity.Users;
 
 @SuppressWarnings("serial")
 public class UserControllerUpdate extends HttpServlet{
@@ -28,7 +28,7 @@ public class UserControllerUpdate extends HttpServlet{
 	@SuppressWarnings("unchecked")
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Key k = KeyFactory.createKey(User.class.getSimpleName(), new Long(req.getParameter("userId")).longValue());
+		Key k = KeyFactory.createKey(Users.class.getSimpleName(), new Long(req.getParameter("userId")).longValue());
 		com.google.appengine.api.users.User uGoogle =UserServiceFactory.getUserService().getCurrentUser();
 		String adminMaestro = "bryan96.sc@gmail.com";
 		String error;
@@ -38,8 +38,8 @@ public class UserControllerUpdate extends HttpServlet{
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 		} else{
 			if(!uGoogle.getEmail().equals(adminMaestro)){
-				String queryUsers = "select from "+User.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
-				List<User> searchUsers = (List<User>) pm.newQuery(queryUsers).execute();
+				String queryUsers = "select from "+Users.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
+				List<Users> searchUsers = (List<Users>) pm.newQuery(queryUsers).execute();
 
 				if(searchUsers.isEmpty()){
 					req.getRequestDispatcher("/WEB-INF/Views/Errors/error2.jsp").forward(req, resp);
@@ -55,7 +55,7 @@ public class UserControllerUpdate extends HttpServlet{
 						req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 					} else {
 						if(entradaAdmin){
-							User user = pm.getObjectById(User.class, k);
+							Users user = pm.getObjectById(Users.class, k);
 							String query = "select  from " + Role.class.getName();
 							List<Role> roles = (List<Role>) pm.newQuery(query).execute();
 							req.setAttribute("roles", roles);
@@ -71,7 +71,7 @@ public class UserControllerUpdate extends HttpServlet{
 					}
 				}
 			} else {
-				User user = pm.getObjectById(User.class, k);
+				Users user = pm.getObjectById(Users.class, k);
 				String query = "select  from " + Role.class.getName();
 				List<Role> roles = (List<Role>) pm.newQuery(query).execute();
 				req.setAttribute("roles", roles);
@@ -83,8 +83,8 @@ public class UserControllerUpdate extends HttpServlet{
 	}
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();	
-		Key k = KeyFactory.createKey(User.class.getSimpleName(), Long.parseLong(req.getParameter("userId")));
-		User us = pm.getObjectById(User.class, k);
+		Key k = KeyFactory.createKey(Users.class.getSimpleName(), Long.parseLong(req.getParameter("userId")));
+		Users us = pm.getObjectById(Users.class, k);
 
 		Long rol = Long.parseLong(req.getParameter("rol"));
 		String correo = req.getParameter("correo");

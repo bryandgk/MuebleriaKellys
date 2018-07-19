@@ -1,4 +1,4 @@
-package controller.proformas;
+package controller.producto;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +19,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import pmf.entity.PMF;
 
 @SuppressWarnings("serial")
-public class ProformasControllerIndex extends HttpServlet {
+public class ProductoControllerIndex extends HttpServlet {
 
 	@SuppressWarnings("unchecked")
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
@@ -55,7 +55,7 @@ public class ProformasControllerIndex extends HttpServlet {
 					}
 					else{
 						String query3 = "select from "+Access.class.getName()
-								+" where idRol == "+uSearch.get(0).getIdRole()+" && resource== "+rSearch.get(0).getId()+" && status==true";	
+								+" where idRol == "+uSearch.get(0).getIdRole()+" && resource =="+rSearch.get(0).getId()+" && status==true";	
 						List <Access> aSearch=(List<Access>) pm.newQuery(query3).execute();		
 						if(aSearch.isEmpty()){
 							error = "No se registro el acceso";
@@ -63,20 +63,20 @@ public class ProformasControllerIndex extends HttpServlet {
 							RequestDispatcher dp= getServletContext().getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp");
 							dp.forward(request, response);
 						}else{
-							String queryProforma = "select from "+Proforma.class.getName();
-							List<Proforma> proformas = (List<Proforma>) pm.newQuery(queryProforma).execute();
-							request.setAttribute("proformas", proformas);
-							request.getRequestDispatcher("/WEB-INF/Views/proformas/index.jsp").forward(request, response);
+							String queryProductos = "select from "+Producto.class.getName();
+							List<Producto> productos = (List<Producto>) pm.newQuery(queryProductos).execute();
+							request.setAttribute("productos", productos);
+							request.getRequestDispatcher("/WEB-INF/Views/Productos/index.jsp").forward(request, response);
 						}
 					}
 
 				}
 			}
 			else{
-				String queryProforma = "select from "+Proforma.class.getName();
-				List<Proforma> proformas = (List<Proforma>) pm.newQuery(queryProforma).execute();
-				request.setAttribute("proformas", proformas);
-				request.getRequestDispatcher("/WEB-INF/Views/proformas/index.jsp").forward(request, response);
+				String queryProductos = "select from "+Producto.class.getName();
+				List<Producto> productos = (List<Producto>) pm.newQuery(queryProductos).execute();
+				request.setAttribute("productos", productos);
+				request.getRequestDispatcher("/WEB-INF/Views/Productos/index.jsp").forward(request, response);
 			}
 		}
 

@@ -1,4 +1,5 @@
-package controller.proformas;
+package controller.producto;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -14,11 +15,11 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import model.entity.Access;
-import model.entity.Proforma;
 import model.entity.Resources;
 import model.entity.Users;  
+import model.entity.Producto;  
 @SuppressWarnings("serial")
-public class ProformasControllerDelete extends HttpServlet {  
+public class ProductoControllerDelete extends HttpServlet {  
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		com.google.appengine.api.users.User uGoogle =UserServiceFactory.getUserService().getCurrentUser();
@@ -61,17 +62,17 @@ public class ProformasControllerDelete extends HttpServlet {
 						accesoControlador.close();
 
 						PersistenceManager pm = PMF.get().getPersistenceManager();
-						Key k = KeyFactory.createKey(Proforma.class.getSimpleName(), new Long(request.getParameter("proformaId")).longValue());
+						Key k = KeyFactory.createKey(Producto.class.getSimpleName(), new Long(request.getParameter("productoId")).longValue());
 						try{
-							Proforma r = pm.getObjectById(Proforma.class, k);
+							Producto r = pm.getObjectById(Producto.class, k);
 							if (r !=null){
 								pm.deletePersistent(r);
 
-								response.sendRedirect("/proformas");
+								response.sendRedirect("/productos");
 								pm.close();
 							}
 						}catch (JDOObjectNotFoundException e) {
-							response.sendRedirect("/proformas");
+							response.sendRedirect("/productos");
 						}
 
 					}

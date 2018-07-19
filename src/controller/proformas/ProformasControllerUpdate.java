@@ -17,7 +17,7 @@ import model.entity.Access;
 import model.entity.Producto;
 import model.entity.Proforma;
 import model.entity.Resources;
-import model.entity.User;  
+import model.entity.Users;  
 @SuppressWarnings("serial")
 public class ProformasControllerUpdate extends HttpServlet {  
 	@SuppressWarnings("unchecked")
@@ -33,8 +33,8 @@ public class ProformasControllerUpdate extends HttpServlet {
 		}
 		else{
 			PersistenceManager accesoControlador=PMF.get().getPersistenceManager();
-			String qUsers="select from "+ User.class.getName()+" where email=='"+uGoogle.getEmail()+"' && status==true";
-			List<User> uSearch=(List<User>) accesoControlador.newQuery(qUsers).execute();
+			String qUsers="select from "+ Users.class.getName()+" where email=='"+uGoogle.getEmail()+"' && status==true";
+			List<Users> uSearch=(List<Users>) accesoControlador.newQuery(qUsers).execute();
 			if(uSearch.isEmpty()){
 				error = "usuario no registrado";
 				request.setAttribute("error", error);
@@ -86,9 +86,6 @@ public class ProformasControllerUpdate extends HttpServlet {
 		String telefono=request.getParameter("telefono");
 		int cant=Integer.parseInt(request.getParameter("cantidad"));
 
-		Producto unico= new Producto("Mesa",15.0);
-
-		double pTotal=cant*unico.getpPrecio();
 
 
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -101,7 +98,8 @@ public class ProformasControllerUpdate extends HttpServlet {
 		r.setTelefono(telefono);
 		r.setCant(cant);
 		r.setDate(new Date());
-		r.settPrecio(pTotal);
+
 		response.sendRedirect("/proformas/view");
 		pm.close();
-	}}
+	}
+}

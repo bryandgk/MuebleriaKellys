@@ -1,4 +1,4 @@
-package controller.resources;
+package controller.clasificaciones;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,15 +14,17 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import model.entity.Resources;
+import model.entity.Access;
+import model.entity.Clasificacion;
 import model.entity.Role;
 import model.entity.Users;
 import pmf.entity.PMF;
 @SuppressWarnings("serial")
-public class ResourcesControllerDelete extends HttpServlet {
+public class ClasificacionesControllerDelete extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Key k = KeyFactory.createKey(Resources.class.getSimpleName(), new Long(req.getParameter("userId")).longValue());
+		
+		Key k = KeyFactory.createKey(Access.class.getSimpleName(), new Long(req.getParameter("clasificacionId")).longValue());
+		
 		com.google.appengine.api.users.User uGoogle =UserServiceFactory.getUserService().getCurrentUser();
 		String adminMaestro = "bryan96.sc@gmail.com";
 		String error;
@@ -32,7 +34,8 @@ public class ResourcesControllerDelete extends HttpServlet {
 			req.setAttribute("error", error);
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 		} else {
-			if (!uGoogle.getEmail().equals(adminMaestro)){
+			if(!uGoogle.getEmail().equals(adminMaestro)){
+				PersistenceManager pm = PMF.get().getPersistenceManager();
 				String queryUsers = "select from "+Users.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
 				List<Users> searchUsers = (List<Users>) pm.newQuery(queryUsers).execute();
 				
@@ -51,15 +54,14 @@ public class ResourcesControllerDelete extends HttpServlet {
 					} else {
 						if(entradaAdmin){
 							try{
-								Resources us = pm.getObjectById(Resources.class,k);
-								if(us!=null){
-									Long id = us.getId();
-									pm.deletePersistent(us);
-									resp.sendRedirect("/resources");
+								Clasificacion clasi = pm.getObjectById(Clasificacion.class,k);
+								if(clasi!=null){
+									pm.deletePersistent(clasi);
+									resp.sendRedirect("/clasificaciones");
 									pm.close();
 								}
 							}catch (JDOObjectNotFoundException e) {
-								resp.sendRedirect("/resources");
+								resp.sendRedirect("/clasificaciones");
 							}
 						}
 						else{
@@ -71,20 +73,20 @@ public class ResourcesControllerDelete extends HttpServlet {
 				}
 			} else {
 				try{
-					Resources us = pm.getObjectById(Resources.class,k);
-					if(us!=null){
-						Long id = us.getId();
-						pm.deletePersistent(us);
-						resp.sendRedirect("/resources");
+					PersistenceManager pm = PMF.get().getPersistenceManager();
+					Clasificacion clasi = pm.getObjectById(Clasificacion.class,k);
+					if(clasi!=null){
+						pm.deletePersistent(clasi);
+						resp.sendRedirect("/clasificaciones");
 						pm.close();
 					}
 				}catch (JDOObjectNotFoundException e) {
-					resp.sendRedirect("/resources");
+					resp.sendRedirect("/clasificaciones");
 				}
 			}
 		}
 	}
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.sendRedirect("/resources");
+		resp.sendRedirect("/clasificaciones");
 	}
 }

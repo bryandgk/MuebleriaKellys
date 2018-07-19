@@ -1,4 +1,4 @@
-package controller.resources;
+package controller.clasificaciones;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,31 +25,31 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import model.entity.Resources;
+import model.entity.Access;
+import model.entity.Clasificacion;
+import model.entity.Producto;
 import model.entity.Role;
 import model.entity.Users;
 import pmf.entity.PMF;
 @SuppressWarnings("serial")
-public class ResourcesControllerUpdate extends HttpServlet {
-	private boolean status = true;
+public class ClasificacionesControllerUpdate extends HttpServlet {
+	private boolean status = false;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Key k = KeyFactory.createKey(Resources.class.getSimpleName(), new Long(req.getParameter("userId")).longValue());
-
+		Key k = KeyFactory.createKey(Access.class.getSimpleName(), new Long(req.getParameter("clasificacionId")).longValue());
 		com.google.appengine.api.users.User uGoogle =UserServiceFactory.getUserService().getCurrentUser();
 		String adminMaestro = "bryan96.sc@gmail.com";
 		String error;
-
-		if (uGoogle==null){
+		if (uGoogle == null){
 			error = "necesita iniciar sesion.";
 			req.setAttribute("error", error);
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 		} else {
-			if(!uGoogle.getEmail().equals(adminMaestro)){
+			if (!uGoogle.getEmail().equals(adminMaestro)){
 				String queryUsers = "select from "+Users.class.getName()+ " where email== '"+uGoogle.getEmail()+"' && status==true";
 				List<Users> searchUsers = (List<Users>) pm.newQuery(queryUsers).execute();
-				
+
 				if(searchUsers.isEmpty()){
 					req.getRequestDispatcher("/WEB-INF/Views/Errors/error2.jsp").forward(req, resp);
 				} else {
@@ -65,18 +65,25 @@ public class ResourcesControllerUpdate extends HttpServlet {
 					} else {
 						if(entradaAdmin){
 							try{
-								ServletContext context = getServletContext();
-								String fullPath = context.getRealPath("/WEB-INF/web.xml");
-								ArrayList<String>resource =reso(fullPath);
-								Resources res = pm.getObjectById(Resources.class, k);
-								req.setAttribute("resource", resource);
-								req.setAttribute("res", res);
-								req.getRequestDispatcher("/WEB-INF/Views/Resources/update.jsp").forward(req, resp);
+								PersistenceManager pm1 = PMF.get().getPersistenceManager();
+								String query = "select  from " + Clasificacion.class.getName();
+								List<Clasificacion> clasificaciones = (List<Clasificacion>) pm.newQuery(query).execute();
+								req.setAttribute("clasificaciones", clasificaciones);
+								pm1.close();
+
+								PersistenceManager pm2 = PMF.get().getPersistenceManager();
+								Key cl = KeyFactory.createKey(Clasificacion.class.getSimpleName(), new Long(req.getParameter("clasificacionId")).longValue());
+								Clasificacion r = pm.getObjectById(Clasificacion.class, cl);
+								req.setAttribute("clasificacion", r);
+								pm2.close();
+
+								req.getRequestDispatcher("/WEB-INF/Views/Clasificaciones/update.jsp").forward(req, resp);
 							}
 							catch (JDOFatalUserException e) {
-								resp.sendRedirect("/resources");
+								resp.sendRedirect("/clasificaciones");	
 							}
 						}
+
 						else{
 							error = "no tiene accesos de administrador";
 							req.setAttribute("error", error);
@@ -86,69 +93,49 @@ public class ResourcesControllerUpdate extends HttpServlet {
 				}
 			} else {
 				try{
-					ServletContext context = getServletContext();
-					String fullPath = context.getRealPath("/WEB-INF/web.xml");
-					ArrayList<String>resource =reso(fullPath);
-					Resources res = pm.getObjectById(Resources.class, k);
-					req.setAttribute("resource", resource);
-					req.setAttribute("res", res);
-					req.getRequestDispatcher("/WEB-INF/Views/Resources/update.jsp").forward(req, resp);
+					PersistenceManager pm1 = PMF.get().getPersistenceManager();
+					String query = "select  from " + Clasificacion.class.getName();
+					List<Clasificacion> clasificaciones = (List<Clasificacion>) pm.newQuery(query).execute();
+					req.setAttribute("clasificaciones", clasificaciones);
+					pm1.close();
+
+					PersistenceManager pm2 = PMF.get().getPersistenceManager();
+					Key cl = KeyFactory.createKey(Clasificacion.class.getSimpleName(), new Long(req.getParameter("clasificacionId")).longValue());
+					Clasificacion r = pm.getObjectById(Clasificacion.class, cl);
+					req.setAttribute("clasificacion", r);
+					pm2.close();
+
+					req.getRequestDispatcher("/WEB-INF/Views/Clasificaciones/update.jsp").forward(req, resp);
 				}
 				catch (JDOFatalUserException e) {
-					resp.sendRedirect("/resources");
+					resp.sendRedirect("/clasificaciones");	
 				}
 			}
 		}
+
 	}
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Key k = KeyFactory.createKey(Resources.class.getSimpleName(), new Long(req.getParameter("userId")).longValue());
-		Resources resource = pm.getObjectById(Resources.class, k);
+		Key k = KeyFactory.createKey(Clasificacion.class.getSimpleName(), new Long(req.getParameter("clasificacionId")).longValue());
+		Clasificacion a = pm.getObjectById(Clasificacion.class, k);
 
-		String res = req.getParameter("resource");
+		String clasi= req.getParameter("padre");
+		String name = req.getParameter("name");	
+		status= true;
+		if(clasi!=null){
+			Long padre = Long.parseLong(clasi);
+			a.setName(name);
+			a.setStatus(status);
+			a.setIdPadre(padre);
+		}
+		else {
+			a.setName(name);
+			a.setStatus(status);	
+		}
+		resp.sendRedirect("/clasificaciones");
 
-		resource.setName(res);
-		resource.setStatus(status);
-
-		resp.sendRedirect("/resources");
+		resp.sendRedirect("/access");
 		pm.close();
 
-	}
-	public static ArrayList<String> reso (String fullPath){
-		ArrayList<String> resos = new ArrayList<>();
-		try {					
-			InputStream xd =Thread.currentThread().getContextClassLoader().getResourceAsStream("/WEB-INF/web.xml");
-			File fXmlFile = new File(fullPath);			
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);				
-
-			doc.getDocumentElement().normalize();
-
-			System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-
-			NodeList nList = doc.getElementsByTagName("servlet-mapping");
-
-			System.out.println("----------------------------");
-
-			for (int temp = 0; temp < nList.getLength(); temp++) {
-
-				Node nNode = nList.item(temp);
-
-				System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-					Element eElement = (Element) nNode;
-					String reso= eElement.getElementsByTagName("url-pattern").item(0).getTextContent();
-					System.out.println("Url Pattern : " +reso );
-					resos.add(reso);
-
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return resos;
 	}
 }

@@ -16,7 +16,7 @@ import model.entity.Access;
 import model.entity.Facturar;
 import model.entity.Resources;
 import model.entity.Role;
-import model.entity.User;
+import model.entity.Users;
 
 @SuppressWarnings("serial")
 public class UsersControllerAdd extends HttpServlet{
@@ -32,8 +32,8 @@ public class UsersControllerAdd extends HttpServlet{
 			req.getRequestDispatcher("/WEB-INF/Views/Errors/error5.jsp").forward(req, resp);
 		} else{
 			if(!uGoogle.getEmail().equals(adminMaestro)){
-				String queryUsers = "select from "+User.class.getName()+" where email == '"+uGoogle.getEmail()+"' && status ==true";
-				List<User> searchUser = (List<User>) pm.newQuery(queryUsers).execute();
+				String queryUsers = "select from "+Users.class.getName()+" where email == '"+uGoogle.getEmail()+"' && status ==true";
+				List<Users> searchUser = (List<Users>) pm.newQuery(queryUsers).execute();
 				
 				if(searchUser.isEmpty()){
 					req.getRequestDispatcher("/WEB-INF/Views/Errors/error2.jsp").forward(req, resp);
@@ -82,7 +82,7 @@ public class UsersControllerAdd extends HttpServlet{
 			gender = false;
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		
-		User us = new User(
+		Users us = new Users(
 				correo, 
 				rol , 
 				gender , 
