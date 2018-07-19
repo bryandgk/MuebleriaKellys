@@ -33,7 +33,7 @@ User user = us.getCurrentUser();
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="container">
 				<!-- Brand -->
-				<a class="navbar-brand" href="/index.html">Muebleria Kelly</a>
+				<a class="navbar-brand" href="/principal">Muebleria Kelly</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#iconosDeBarra">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -42,9 +42,7 @@ User user = us.getCurrentUser();
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<!-- Dropdown -->
-					<li class="nav-item">
-						<a class="nav-link" href="">Nosotros</a>
-					</li>
+
 					<li class="nav-item">
 						<a class="nav-link" href="/roles">Roles</a>
 					</li>
@@ -58,7 +56,13 @@ User user = us.getCurrentUser();
 						<a class="nav-link" href="/access">Accesos</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/product">Productos</a>
+						<a class="nav-link" href="/productos">Productos</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/clasificaciones">Clasificaciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/clasificaciones">Clasificaciones</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/proformas">Proformas</a>

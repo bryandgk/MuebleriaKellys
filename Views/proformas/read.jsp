@@ -1,17 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="controller.proformas.*"%>
 <%@ page import="model.entity.*"%>
+<%@ page import="pmf.entity.*"%>
 <%@ page import="java.util.Date"%>
+<%@ page import="java.util.List"%>
 <%@ page import="java.text.SimpleDateFormat"%>
+
+<%@ page import= "javax.jdo.PersistenceManager" %>
+<%@ page import= "javax.servlet.RequestDispatcher"%>
+<%@ page import= "javax.servlet.ServletException"%>
+<%@ page import= "javax.servlet.http.HttpServlet"%>
+<%@ page import= "javax.servlet.http.HttpServletRequest"%>
+<%@ page import= "javax.servlet.http.HttpServletResponse"%>
+<%@ page import= "com.google.appengine.api.datastore.Key"%>
+<%@ page import= "com.google.appengine.api.datastore.KeyFactory"%>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
-<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
+<%@ page import= "com.google.appengine.api.users.UserServiceFactory"%>
+
+
 <%
 	Proforma proformas = (Proforma) request.getAttribute("proformas");
 	SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+	String fecha = formato.format(proformas.getDate());
 	UserService us = UserServiceFactory.getUserService();
 	User user = us.getCurrentUser();
-	String fecha = formato.format(proformas.getDate());
 %>
 
 
@@ -39,7 +52,7 @@
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="container">
 				<!-- Brand -->
-				<a class="navbar-brand" href="/index.html">Muebleria Kelly</a>
+				<a class="navbar-brand" href="/principal">Muebleria Kelly</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#iconosDeBarra">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -48,9 +61,7 @@
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<!-- Dropdown -->
-					<li class="nav-item">
-						<a class="nav-link" href="">Nosotros</a>
-					</li>
+	
 					<li class="nav-item">
 						<a class="nav-link" href="/roles">Roles</a>
 					</li>
@@ -64,7 +75,10 @@
 						<a class="nav-link" href="/access">Accesos</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/product">Productos</a>
+						<a class="nav-link" href="/productos">Productos</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/clasificaciones">Clasificaciones</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/proformas">Proformas</a>
@@ -87,7 +101,7 @@
 				</div>
 			</div>
 		</nav>
-	</div>
+	</div>	
 	<div class="container">
 		<div class="row">
 			<div class="col-md-3 p-4">
@@ -118,18 +132,30 @@
 							<th escope=row">Fecha de creación: </th>
 							<td><%=fecha %></td>
 						</tr>
+						
+						
+						<%for(int i=0;i<proformas.getProductos().size();i++) {%>
+						
+						<%
+						PersistenceManager pm = PMF.get().getPersistenceManager();
+						Key k = KeyFactory.createKey(Producto.class.getSimpleName(),proformas.getProductos().get(i));
+						Producto producto = pm.getObjectById(Producto.class, k);
+						pm.close(); 
+						%>
+						
 						<tr>
 							<th escope=row">Objeto a comprar: </th>
-							<td><%=proformas.getName() %></td>
-						</tr>
-						<tr>
 							<th escope=row">Precio por unidad: </th>
-							<td>15</td>
-						</tr>
-						<tr>
 							<th escope=row">Cantidad de objetos: </th>
-							<td><%=proformas.getCant() %></td>
+							<th escope=row">Total a Pagar por Producto</th>
+							</tr>
+							<tr>
+							<td><%=producto.getName() %></td>
+							<td><%=producto.getpPrecio() %></td>
+							<td><%=producto.getCant() %></td>
+							<td><%=producto.getpUTotal() %></td>
 						</tr>
+						<%} %>
 						<tr>
 							<th escope=row">Total a Pagar</th>
 							<td><%=proformas.gettPrecio() %></td>

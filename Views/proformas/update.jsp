@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="controller.proformas.*" %>
+
+<%@ page import="model.entity.*" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import="model.entity.*" %>
-<%@ page import="java.util.List" %>
 <% Proforma r = (Proforma)request.getAttribute("proformas");
 UserService us = UserServiceFactory.getUserService();
-	User user = us.getCurrentUser();%>
+User user = us.getCurrentUser();%>
 <%//Aca mandariamos junto con los datos al servlet %>
 <!DOCTYPE html>
 <html>
@@ -30,7 +31,7 @@ UserService us = UserServiceFactory.getUserService();
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="container">
 				<!-- Brand -->
-				<a class="navbar-brand" href="/index.html">Muebleria Kelly</a>
+				<a class="navbar-brand" href="/principal">Muebleria Kelly</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#iconosDeBarra">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -39,9 +40,6 @@ UserService us = UserServiceFactory.getUserService();
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<!-- Dropdown -->
-					<li class="nav-item">
-						<a class="nav-link" href="">Nosotros</a>
-					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/roles">Roles</a>
 					</li>
@@ -55,7 +53,10 @@ UserService us = UserServiceFactory.getUserService();
 						<a class="nav-link" href="/access">Accesos</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/product">Productos</a>
+						<a class="nav-link" href="/productos">Productos</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/clasificaciones">Clasificaciones</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/proformas">Proformas</a>
@@ -78,7 +79,7 @@ UserService us = UserServiceFactory.getUserService();
 				</div>
 			</div>
 		</nav>
-	</div>
+	</div>	
 	<div class="container">
 		<div class="row">
 			<div class="col-md-3">
@@ -108,6 +109,5 @@ UserService us = UserServiceFactory.getUserService();
 			</div>
 		</div>
 	</div>
-
 </body>
 </html>

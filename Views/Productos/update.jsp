@@ -1,33 +1,33 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="controller.proformas.*" %>
+
+<%@ page import="model.entity.*" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import = "model.entity.*" %>
-<%@ page import = "java.util.List" %>
-
-<%
-Users user = (Users) request.getAttribute("user");
-	List<Role> roles = (List<Role>) request.getAttribute("roles");
-	UserService us = UserServiceFactory.getUserService();
-	User user1 = us.getCurrentUser();
+<% Producto r = (Producto)request.getAttribute("producto");
+UserService us = UserServiceFactory.getUserService();
+User user = us.getCurrentUser();
 %>
+<%//Aca mandariamos junto con los datos al servlet %>
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Usuarios</title>
-		<meta charset="utf-8">
-  		<meta name="viewport" content="width=device-width, initial-scale=1">
-  		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>	
-  		<link rel="stylesheet"
+<head>
+<title>Editar producto</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.in.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet"
 	href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
 	integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
-	crossorigin="anonymous">	
-	</head>
-	<body>
-		<div class="cabeza">
+	crossorigin="anonymous">
+</head>
+<body>
+	<div class="cabeza">
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="container">
 				<!-- Brand -->
@@ -40,7 +40,7 @@ Users user = (Users) request.getAttribute("user");
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<!-- Dropdown -->
-					
+				
 					<li class="nav-item">
 						<a class="nav-link" href="/roles">Roles</a>
 					</li>
@@ -83,43 +83,31 @@ Users user = (Users) request.getAttribute("user");
 	</div>	
 	<div class="container">
 		<div class="row">
-			<div class="col-md-3 p-4">
-				<div class="mx-auto">
-					<a class="btn btn-success" href="/users">List of Users</a>
-				</div>
+			<div class="col-md-3">
+				<a class="btn btn-success" href="/productos">Lists of Products</a>
 			</div>
-			<div class="col-md-9 p-4">
-				<h3>Update <%= user.getId() %></h3>
-				<form action="/users/update?userId=<%= user.getId()%>" method="post">
-					<p>Role <span class="text-danger">*</span></p>
-					<select class="form-control form-group w-25" name="rol">
-					<%  
-						if(roles.size()>0){
-							for(int i=0 ; i<roles.size();i++){
-								Role o = (Role) roles.get(i);
-					%>
-								<option value="<%= o.getId()%>"><%= o.getRoles() %></option>
-					<%
-							}
-						}else{
-							
-					%>
-					<option>Sin roles</option>
-					<%
-						}
-					%>
-					</select>
-					<p>Email<span class="text-danger">*</span></p>
-					<input class="form-control form-group w-50" name="correo" type="email" value="<%= user.getEmail()%>" maxlength="30" placeholder="Example: example@gmail.com" required>
-					<p>Género <span class="text-danger">*</span> </p>
-					<select class="form-control form-group w-25" name="gender" value="true">
-						<option>masculino</option>
-						<option>femenino</option>
-					</select>
-					<input class="btn btn-success form-control w-25" type="submit" name="enviar" value="Actualizar" >
+			<div class="col-md-6">
+				<h2>Update</h2>
+				<form method="post" action="/productos/update?productoId=<%=r.getId() %>">
+	
+					<input type="hidden" name="action" value="editarProducto"  />
+				
+					<p>No se aceptan caracteres que no sean letras o numeros</p>
+						
+							<h3>ID del producto: <h3>
+							<input class="form-control" type="input" value="<%= r.getId() %>" name="name" pattern="[A-Za-z0-9 ]*"required>
+						
+						
+							<h3>Nombre:</h3>
+							<input class="form-control" type="input" name="name" value="<%= r.getName() %>" pattern="[A-Za-z0-9. ]*" required>
+						
+							<h3>Precio Unitario:</h3>
+							<input type="number" name="uPrecio" value="<%=r.getpPrecio() %>" min="1" max="1000000000" >
+				
+						<input class="btn btn-success"	type="submit" value="Submit" id="btsubmit">
 				</form>
 			</div>
 		</div>
 	</div>
-	</body>
+</body>
 </html>

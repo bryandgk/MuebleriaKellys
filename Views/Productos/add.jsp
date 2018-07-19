@@ -1,33 +1,38 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="controller.proformas.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="model.entity.Clasificacion"%>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import = "model.entity.*" %>
-<%@ page import = "java.util.List" %>
-
 <%
-Users user = (Users) request.getAttribute("user");
-	List<Role> roles = (List<Role>) request.getAttribute("roles");
-	UserService us = UserServiceFactory.getUserService();
-	User user1 = us.getCurrentUser();
+List<Clasificacion> clasificaciones = (List<Clasificacion>) request.getAttribute("clasificaciones");
+UserService us = UserServiceFactory.getUserService();
+User user = us.getCurrentUser();
 %>
+
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Usuarios</title>
-		<meta charset="utf-8">
-  		<meta name="viewport" content="width=device-width, initial-scale=1">
-  		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>	
-  		<link rel="stylesheet"
+<head>
+<title>Añadir Productos</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet"
 	href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
 	integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
-	crossorigin="anonymous">	
-	</head>
-	<body>
-		<div class="cabeza">
+	crossorigin="anonymous">
+
+</head>
+<body>
+	<div class="cabeza">
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="container">
 				<!-- Brand -->
@@ -83,43 +88,47 @@ Users user = (Users) request.getAttribute("user");
 	</div>	
 	<div class="container">
 		<div class="row">
-			<div class="col-md-3 p-4">
+			<div class="acciones col-md-4 p-4">
 				<div class="mx-auto">
-					<a class="btn btn-success" href="/users">List of Users</a>
+					<a class="btn btn-success" href="/productos">Lista de productos</a>
 				</div>
 			</div>
-			<div class="col-md-9 p-4">
-				<h3>Update <%= user.getId() %></h3>
-				<form action="/users/update?userId=<%= user.getId()%>" method="post">
-					<p>Role <span class="text-danger">*</span></p>
-					<select class="form-control form-group w-25" name="rol">
-					<%  
-						if(roles.size()>0){
-							for(int i=0 ; i<roles.size();i++){
-								Role o = (Role) roles.get(i);
-					%>
-								<option value="<%= o.getId()%>"><%= o.getRoles() %></option>
-					<%
-							}
-						}else{
+			<div class="entradas col-md-5 p-4">
+				
+				<h3>Add Product</h3>
+				<form action="/productos/add" method="post">
+					<input type="hidden" name="action" value="crearProducto" />
+					<p>No se aceptan caracteres que no sean letras o numeros</p>
+					
+							<h3>Nombre:</h3>
+							<input class="form-control" type="input" name="name"  pattern="[A-Za-z0-9. ]*" required>
+						
+							<h3>Precio Unitario (S./):</h3>
+							<input type="number" name="uPrecio" min="1" max="1000000000" required>
 							
-					%>
-					<option>Sin roles</option>
-					<%
-						}
-					%>
-					</select>
-					<p>Email<span class="text-danger">*</span></p>
-					<input class="form-control form-group w-50" name="correo" type="email" value="<%= user.getEmail()%>" maxlength="30" placeholder="Example: example@gmail.com" required>
-					<p>Género <span class="text-danger">*</span> </p>
-					<select class="form-control form-group w-25" name="gender" value="true">
-						<option>masculino</option>
-						<option>femenino</option>
-					</select>
-					<input class="btn btn-success form-control w-25" type="submit" name="enviar" value="Actualizar" >
+							<h3>Clasificacion:</h3>
+							<select class="form-control w-50" name="clasificacion">
+							<%
+								if(clasificaciones.size()>0){
+									for(int i=0 ; i<clasificaciones.size();i++){
+									Clasificacion o = (Clasificacion) clasificaciones.get(i);
+							%>
+									<option value="<%= o.getId()%>"><%= o.getName() %></option>
+							<%
+									}
+							}else{
+							
+							%>
+								<option>Sin clasificacion</option>
+							<%
+								}
+							%>
+							</select>
+							
+					<input class="btn btn-success" type="submit" value="Submit">
 				</form>
 			</div>
 		</div>
 	</div>
-	</body>
+</body>
 </html>

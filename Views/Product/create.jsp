@@ -26,7 +26,7 @@
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="container">
 				<!-- Brand -->
-				<a class="navbar-brand" href="/index.html">Muebleria Kelly</a>
+				<a class="navbar-brand" href="/principal">Muebleria Kelly</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#iconosDeBarra">
 					<span class="navbar-toggler-icon"></span>
 				</button>

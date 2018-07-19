@@ -1,38 +1,42 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="controller.proformas.*" %>
-<%@ page import="java.util.List" %>
-<%@ page import="model.entity.*" %>
+<%@ page import="controller.proformas.*"%>
+<%@ page import="model.entity.*"%>
+<%@ page import="java.util.List"%>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%
-List<Proforma> listas = (List<Proforma>) request.getAttribute("proformas");
+<% 
+List<Proforma> proformas = (List<Proforma>)request.getAttribute("proformas"); 
 UserService us = UserServiceFactory.getUserService();
 User user = us.getCurrentUser();
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>Proformas</title>
+<title>Añadir Proformas</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script>	
+</script>
 <link rel="stylesheet"
 	href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
 	integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
 	crossorigin="anonymous">
-		
 </head>
 <body>
-<div class="cabeza">
+	<div class="cabeza">
 		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 			<div class="container">
 				<!-- Brand -->
-				<a class="navbar-brand" href="/index.html">Muebleria Kelly</a>
+				<a class="navbar-brand" href="/principal">Muebleria Kelly</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#iconosDeBarra">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -41,9 +45,7 @@ User user = us.getCurrentUser();
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<!-- Dropdown -->
-					<li class="nav-item">
-						<a class="nav-link" href="">Nosotros</a>
-					</li>
+				
 					<li class="nav-item">
 						<a class="nav-link" href="/roles">Roles</a>
 					</li>
@@ -57,7 +59,10 @@ User user = us.getCurrentUser();
 						<a class="nav-link" href="/access">Accesos</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/product">Productos</a>
+						<a class="nav-link" href="/productos">Productos</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/clasificaciones">Clasificaciones</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/proformas">Proformas</a>
@@ -80,7 +85,7 @@ User user = us.getCurrentUser();
 				</div>
 			</div>
 		</nav>
-	</div>
+	</div>	
 	<div class="container">
 		<div class="row">
 			<div class="col-md-3 p-4">
@@ -89,7 +94,7 @@ User user = us.getCurrentUser();
 			<div class="col-md-9">
 				<h1>Lista de Proformas</h1>
 				<%
-					if (listas!=null && listas.size()>0){
+					if (proformas!=null && proformas.size()>0){
 				%>
 				<table class="table">
 					<thead>
@@ -97,22 +102,18 @@ User user = us.getCurrentUser();
 							<th>Nombre</th>
 							<th>Dirección</th>
 							<th>Teléfono</th>
-							<th>Producto</th>
-							<th>Cantidad</th>
 							<th>Precio Total</th>
 							<th>Acciones Disponibles</th>
 						</tr>
 					</thead>
 					<%
-						for ( Proforma c: listas) {
+						for ( Proforma c: proformas) {
 					%>
 					<tbody>
 					<tr>
 						<td><%=c.getName()%></td>
-						<td> <%= c.getDireccion() %>
-						</td><td><%=c.getTelefono()%></td>
-						<td>Mesa para comedor</td>
-						<td><%= c.getCant()%></td>
+						<td> <%= c.getDireccion() %></td>
+						<td><%=c.getTelefono()%></td>
 						<td><%=c.gettPrecio()%></td>
 						<td>
 								<span><a href="/proformas/view?proformaId=<%= c.getId() %>">View</a></span>

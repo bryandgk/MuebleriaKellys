@@ -1,30 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import = "java.util.List" %>
+<%@ page import ="model.entity.Clasificacion"%>	
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import = "model.entity.*" %>
-<%@ page import = "java.util.List" %>
 
 <%
-Users user = (Users) request.getAttribute("user");
-	List<Role> roles = (List<Role>) request.getAttribute("roles");
-	UserService us = UserServiceFactory.getUserService();
-	User user1 = us.getCurrentUser();
+	List<Clasificacion> clasificaciones = (List<Clasificacion>) request.getAttribute("clasificaciones");
+UserService us = UserServiceFactory.getUserService();
+User user = us.getCurrentUser();
 %>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Usuarios</title>
+		<title>Clasificaciones</title>
 		<meta charset="utf-8">
   		<meta name="viewport" content="width=device-width, initial-scale=1">
   		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>	
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
   		<link rel="stylesheet"
 	href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
 	integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
-	crossorigin="anonymous">	
+	crossorigin="anonymous">			
 	</head>
 	<body>
 		<div class="cabeza">
@@ -40,7 +39,6 @@ Users user = (Users) request.getAttribute("user");
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<!-- Dropdown -->
-					
 					<li class="nav-item">
 						<a class="nav-link" href="/roles">Roles</a>
 					</li>
@@ -80,46 +78,56 @@ Users user = (Users) request.getAttribute("user");
 				</div>
 			</div>
 		</nav>
-	</div>	
+	</div>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-3 p-4">
 				<div class="mx-auto">
-					<a class="btn btn-success" href="/users">List of Users</a>
+					<a class="btn btn-success" href="/clasificaciones/add">Añadir Clasificacion</a>
 				</div>
 			</div>
 			<div class="col-md-9 p-4">
-				<h3>Update <%= user.getId() %></h3>
-				<form action="/users/update?userId=<%= user.getId()%>" method="post">
-					<p>Role <span class="text-danger">*</span></p>
-					<select class="form-control form-group w-25" name="rol">
-					<%  
-						if(roles.size()>0){
-							for(int i=0 ; i<roles.size();i++){
-								Role o = (Role) roles.get(i);
+				<h1>Clasificaciones</h1>
+				<%
+					if(!clasificaciones.isEmpty() && clasificaciones.size() > 0){
+				%>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>Padre</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<% 	
+						for (int i= 0; i<clasificaciones.size() ; i++){
+							Clasificacion o = (Clasificacion) clasificaciones.get(i);
 					%>
-								<option value="<%= o.getId()%>"><%= o.getRoles() %></option>
-					<%
-							}
-						}else{
-							
-					%>
-					<option>Sin roles</option>
+					<tbody>
+						<tr>
+							<td><%= o.getId()%></td>
+							<td><%= o.getName()%></td>
+							<td><%= o.getIdPadre()%></td>
+							<td><%= o.isStatus()%></td>
+							<td>
+								<span><a href="/clasificaciones/view?clasificacionId=<%=o.getId()%>">View</a></span>
+								<span><a href="/clasificaciones/delete?clasificacionId=<%=o.getId()%>">Delete</a></span>
+								<span><a href="/clasificaciones/update?clasificacionId=<%=o.getId()%>">Update</a></span>
+							</td>
+						</tr>
+					</tbody>
 					<%
 						}
 					%>
-					</select>
-					<p>Email<span class="text-danger">*</span></p>
-					<input class="form-control form-group w-50" name="correo" type="email" value="<%= user.getEmail()%>" maxlength="30" placeholder="Example: example@gmail.com" required>
-					<p>Género <span class="text-danger">*</span> </p>
-					<select class="form-control form-group w-25" name="gender" value="true">
-						<option>masculino</option>
-						<option>femenino</option>
-					</select>
-					<input class="btn btn-success form-control w-25" type="submit" name="enviar" value="Actualizar" >
-				</form>
+				</table>
+				<% 
+					}else{
+				%>
+				<h4>Sin Clasificaciones</h4>
+				<%} %>
 			</div>
-		</div>
+		</div>	
 	</div>
 	</body>
 </html>
